@@ -1,8 +1,8 @@
 <template>
-    <h1>hello home</h1>
+    <h1>hello about</h1>
 </template>
 <script>
 export default {
-    name: 'VueHome',
+    name: 'RecommendPosts',
 }
 </script>
