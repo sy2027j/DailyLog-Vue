@@ -1,7 +1,7 @@
 <template>
     <div class="topNavBar">
         <b-navbar toggleable="lg" type="light" variant="white">
-            <b-navbar-brand href="#" class="title">
+            <b-navbar-brand href="#" class="bold">
                 <img alt="Vue logo" src="../../assets/dailylog-logo-full.jpg" width="150px">
                 <!-- DAILY LOG -->
             </b-navbar-brand>
@@ -62,7 +62,7 @@ export default {
 #fixNav > nav > div > ul > li:nth-child(1) > a {
     padding-left: 0 !important;
 }
-.title{
+.bold{
     font-weight:700;
 }
 .navbar-brand {

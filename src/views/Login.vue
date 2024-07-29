@@ -96,7 +96,6 @@ a {
     background-color: transparent;
 }
 h2 {
-    color: #0099e5 !important;
     font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 .pr10 {

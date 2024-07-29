@@ -12,7 +12,7 @@
                 </div>                   
             </div>
             <div class="contentBottom txt_left">
-                ♡ 100  ☞ 20
+                ❤️ 100  💬 20
             </div>
         </div>
         <div class="post">
@@ -27,7 +27,7 @@
                 </div>                   
             </div>
             <div class="contentBottom txt_left">
-                ♡ 100  ☞ 20
+                ❤️ 100  💬 20
             </div>
         </div>
         <div class="post">
@@ -42,7 +42,7 @@
                 </div>                   
             </div>
             <div class="contentBottom txt_left">
-                ♡ 100  ☞ 20
+                ❤️ 100  💬 20
             </div>
         </div>
     </div>
