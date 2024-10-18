@@ -16,6 +16,9 @@
             <div class="pdb20">
                 <span class="block joinInfos">비밀번호</span>
                 <input class="loginInput" id="password">
+                <div class="joinInfos flex">
+                    <svg aria-hidden="true" width="15" height="30" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
+                </div>
             </div>
             <div class="pdb20">
                 <span class="block joinInfos">비밀번호 확인</span>

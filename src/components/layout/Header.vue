@@ -10,8 +10,8 @@
 
             <b-collapse id="nav-collapse" is-nav right>
                 <b-navbar-nav>
-                    <b-nav-item class="headMenu" href="/login">로그인</b-nav-item>
-                    <b-nav-item class="headMenu bgLogo" href="/join">회원가입</b-nav-item>
+                    <b-nav-item class="headMenu" href="/dailylog/login">로그인</b-nav-item>
+                    <b-nav-item class="headMenu bgLogo" href="/dailylog/join">회원가입</b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -19,10 +19,10 @@
     <div id="fixNav" class="topNavBar">
         <b-navbar toggleable="lg" type="light" variant="white">
             <b-navbar-nav class="first">
-                <b-nav-item class="menuTitle" href="/posts/bestPosts">BEST</b-nav-item>
-                <b-nav-item class="menuTitle" href="/posts/recommendPosts">추천글</b-nav-item>
-                <b-nav-item class="menuTitle" href="/posts/subscribePosts">이웃글</b-nav-item>
-                <b-nav-item class="menuTitle" href="/posts/allPosts">전체글</b-nav-item>
+                <b-nav-item class="menuTitle" href="/dailylog/posts/bestPosts">BEST</b-nav-item>
+                <b-nav-item class="menuTitle" href="/dailylog/posts/recommendPosts">추천글</b-nav-item>
+                <b-nav-item class="menuTitle" href="/dailylog/posts/subscribePosts">이웃글</b-nav-item>
+                <b-nav-item class="menuTitle" href="/dailylog/posts/allPosts">전체글</b-nav-item>
             </b-navbar-nav>
 
             <b-collapse id="nav-collapse" is-nav>
@@ -31,9 +31,9 @@
                     <template #button-content>
                         <em>User ID</em>
                     </template>
-                    <b-dropdown-item href="/mypage/profile">내 홈</b-dropdown-item>
-                    <b-dropdown-item href="/mypage/newPost">새글쓰기</b-dropdown-item>
-                    <b-dropdown-item href="/mypage/personalInfomation">내 정보</b-dropdown-item>
+                    <b-dropdown-item href="/dailylog/mypage/profile">내 홈</b-dropdown-item>
+                    <b-dropdown-item href="/dailylog/mypage/newPost">새글쓰기</b-dropdown-item>
+                    <b-dropdown-item href="/dailylog/mypage/personalInfomation">내 정보</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>

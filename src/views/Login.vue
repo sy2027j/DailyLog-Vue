@@ -16,26 +16,52 @@
         <div class="hr-text pdb20">간편 로그인</div>
         <div class="">
             <div class="">
-                <button class="socialLoginBtn pr10" type="button" id="kakaoLoginBtn" aria-label="카카오로 로그인">
+                <a href="/oauth2/authorization/kakao?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn pr20" type="button" id="kakaoLoginBtn" aria-label="카카오로 로그인">
                     <img alt="kakao logo" src="../assets/socialLogin/btn_kakao.svg" width="30px">
-                </button>
-                <button class="socialLoginBtn pr10" type="button" id="googleLoginBtn" aria-label="구글로 로그인">
+                </a>
+                <a href="/oauth2/authorization/google?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn pr20" type="button" id="googleLoginBtn" aria-label="구글로 로그인">
                     <img alt="google logo" src="../assets/socialLogin/btn_google.svg" width="30px">
-                </button>
-                <button class="socialLoginBtn pr10" type="button" id="naverLoginBtn" aria-label="네이버로 로그인">
+                </a>
+                <a href="/oauth2/authorization/naver?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn" type="button" id="naverLoginBtn" aria-label="네이버로 로그인">
                     <img alt="naver logo" src="../assets/socialLogin/btn_naver.svg" width="30px">
-                </button>
-                <button class="socialLoginBtn" type="button" id="appleLoginBtn" aria-label="애플로 로그인">
-                    <img alt="apple logo" src="../assets/socialLogin/btn_apple.svg" width="30px">
-                </button>
+                </a>
             </div>
         </div>
     </div>
 </template>
 <script>
+import { router } from '../router'
+import store from "../store";
+
 export default {
-    name: 'RecommendPosts',
+    name: 'UserLogin',
+    data() {
+        return {
+            email: '',
+            password: ''
+        }
+    },
+    methods: {
+        submitLoginForm() {
+            const loginForm = {
+                username: this.email,
+                password: this.password
+            }
+
+            this.$axios.post('/api/user/login', loginForm).then(res => {
+                if (res.status === 200) {
+                    store.commit('setToken', res.data)
+                    sessionStorage.setItem('accessToken', res.data);
+                    window.alert('로그인하였습니다');
+                    router.push({path:'/'})
+                }
+            }).catch(() => {
+                window.alert('로그인에 실패하였습니다.')
+            })
+        }   
+    }
 }
+
 </script>
 <style>
 #loginDiv {
@@ -98,7 +124,7 @@ a {
 h2 {
     font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-.pr10 {
-    padding-right: 10px;
+.pr20 {
+    padding-right: 20px;
 }
 </style>

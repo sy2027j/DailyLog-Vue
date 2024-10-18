@@ -4,12 +4,14 @@ import BestPosts from "./views/BestPosts";
 import RecommendPosts from "./views/RecommendPosts";
 import Login from "./views/Login";
 import Join from "./views/Join";
+import Redirect from "./views/UserRedirect";
 
 const routes = [
-    {path:"/login", component: Login},
-    {path:"/join", component: Join},
-    {path:"/posts/bestPosts", component: BestPosts},
-    {path:"/posts/recommendPosts", component: RecommendPosts}
+    {path:"/dailylog/login", component: Login},
+    {path:"/dailylog/join", component: Join},
+    {path:"/dailylog/posts/bestPosts", component: BestPosts},
+    {path:"/dailylog/posts/recommendPosts", component: RecommendPosts},
+    {path:"/oauth2/redirect", component: Redirect}
 ]
 
 const router = createRouter({
