@@ -4,21 +4,17 @@
 </template>
      
 <script>
-  import router from '../router'
-  import store from "../store";
-     
   export default {
-    created() {
-      const token = this.$route.query.token
+    mounted() {
+      const token = this.$store.state.token
       console.log('token',token)
       if (token) {
-        store.commit('setToken', token);
-        sessionStorage.setItem('accessToken', token);
+        this.$store.commit('setToken', token);
         window.alert('로그인하였습니다');
-        router.push({path:'/'})
+        this.$router.push({path:'/'})
       } else {
         window.alert('로그인에 실패하였습니다.')
-        router.push({path:'/login'})
+        this.$router.push({path:'/login'})
       }
     }
   }

@@ -11,7 +11,7 @@ const routes = [
     {path:"/dailylog/join", component: Join},
     {path:"/dailylog/posts/bestPosts", component: BestPosts},
     {path:"/dailylog/posts/recommendPosts", component: RecommendPosts},
-    {path:"/oauth2/redirect", component: Redirect}
+    {path:"/dailylog/oauth2/redirect", component: Redirect}
 ]
 
 const router = createRouter({

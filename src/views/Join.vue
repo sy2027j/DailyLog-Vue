@@ -6,8 +6,8 @@
         </h4>
         <div class="pdb20" id="loginFormDiv">
             <div class="pdb10">
-                <span class="block joinInfos">아이디</span>
-                <input class="loginInput" id="id">
+                <span class="block joinInfos">이메일</span>
+                <input class="loginInput" id="email" type="email" v-model="email" required>
                 <div class="joinInfos flex">
                     <svg aria-hidden="true" width="15" height="30" focusable="false" data-prefix="far" data-icon="xmark" class="svg-inline--fa fa-xmark " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="font-size: 16px; color: rgb(250, 82, 82);"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
                     <span class="lh30 txt_red pdl5">확인문구</span>
@@ -15,7 +15,7 @@
                 </div>
             <div class="pdb20">
                 <span class="block joinInfos">비밀번호</span>
-                <input class="loginInput" id="password">
+                <input class="loginInput" id="password" type="password" v-model="password" required>
                 <div class="joinInfos flex">
                     <svg aria-hidden="true" width="15" height="30" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
                 </div>
@@ -25,7 +25,7 @@
                 <input class="loginInput" id="passwordCheck">
             </div>
             <div>
-                <button class="loginBtn" id="login">회원가입하기</button>
+                <button class="loginBtn" @click="signup">회원가입하기</button>
             </div>
         </div>
         <div class="hr-text pdb20">간편 회원가입</div>
@@ -49,7 +49,30 @@
 </template>
 <script>
 export default {
-    name: 'RecommendPosts',
+    name: 'UserJoin',
+    data() {
+        return {
+            email: '',
+            password: '',
+        };
+    },
+    methods: {
+        signup() {
+            const signupForm = {
+                email: this.email,
+                password: this.password
+            }
+
+            this.$axios.post('/api/auth/signup', signupForm).then(res => {
+                if (res.status === 200) {
+                    window.alert('회원가입되었습니다.');
+                    this.$router.push({path: '/dailylog/login'})
+                }
+            }).catch(() => {
+                console.log("실패");
+            })
+        }   
+    },
 }
 </script>
 <style>

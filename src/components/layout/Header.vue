@@ -9,9 +9,13 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav right>
-                <b-navbar-nav>
+                <b-navbar-nav v-if="!$store.state.token">
                     <b-nav-item class="headMenu" href="/dailylog/login">로그인</b-nav-item>
                     <b-nav-item class="headMenu bgLogo" href="/dailylog/join">회원가입</b-nav-item>
+                </b-navbar-nav>
+                <b-navbar-nav v-else>
+                    <b-nav-item class="headMenu" @click="logout()">로그아웃</b-nav-item>
+                    <b-nav-item class="headMenu bgLogo" href="/dailylog/mypage/profile">마이페이지</b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -43,6 +47,13 @@
 <script>
 export default {
     name: 'VueHeader',
+    methods: {
+        logout() {
+            this.$store.commit('setToken',null);
+            alert('로그아웃하였습니다.');
+            this.$router.push({path: '/dailylog/login'})
+        }
+    }
 }
 </script>
 <style>

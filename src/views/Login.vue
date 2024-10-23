@@ -4,9 +4,9 @@
             <img alt="Vue logo" src="../assets/dailylog-logo-full.jpg" width="300px">
         </h2>
         <div id="loginFormDiv">
-            <div class="pdb10"><input class="loginInput" id="id" placeholder="아이디"></div>
-            <div class="pdb20"><input class="loginInput" id="password" placeholder="비밀번호"></div>
-            <div class="pdb10"><button class="loginBtn" id="login">로그인</button></div>
+            <div class="pdb10"><input class="loginInput" id="email" v-model="email" placeholder="아이디"></div>
+            <div class="pdb20"><input class="loginInput" id="password" v-model="password" placeholder="비밀번호"></div>
+            <div class="pdb10"><button class="loginBtn" id="login" @click="login">로그인</button></div>
         </div>
         <div class="loginLinksDiv pdb20">
             <a class="" href="/signin/find/password">비밀번호 찾기</a><a> | </a>
@@ -16,13 +16,13 @@
         <div class="hr-text pdb20">간편 로그인</div>
         <div class="">
             <div class="">
-                <a href="/oauth2/authorization/kakao?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn pr20" type="button" id="kakaoLoginBtn" aria-label="카카오로 로그인">
+                <a href="/oauth2/authorization/kakao" class="socialLoginBtn pr20" type="button" id="kakaoLoginBtn" aria-label="카카오로 로그인">
                     <img alt="kakao logo" src="../assets/socialLogin/btn_kakao.svg" width="30px">
                 </a>
-                <a href="/oauth2/authorization/google?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn pr20" type="button" id="googleLoginBtn" aria-label="구글로 로그인">
+                <a href="/oauth2/authorization/google" class="socialLoginBtn pr20" type="button" id="googleLoginBtn" aria-label="구글로 로그인">
                     <img alt="google logo" src="../assets/socialLogin/btn_google.svg" width="30px">
                 </a>
-                <a href="/oauth2/authorization/naver?redirect_uri=http://localhost:8080/oauth2/redirect" class="socialLoginBtn" type="button" id="naverLoginBtn" aria-label="네이버로 로그인">
+                <a href="/oauth2/authorization/naver" class="socialLoginBtn" type="button" id="naverLoginBtn" aria-label="네이버로 로그인">
                     <img alt="naver logo" src="../assets/socialLogin/btn_naver.svg" width="30px">
                 </a>
             </div>
@@ -30,9 +30,6 @@
     </div>
 </template>
 <script>
-import { router } from '../router'
-import store from "../store";
-
 export default {
     name: 'UserLogin',
     data() {
@@ -42,18 +39,17 @@ export default {
         }
     },
     methods: {
-        submitLoginForm() {
+        login() {
             const loginForm = {
-                username: this.email,
+                email: this.email,
                 password: this.password
             }
 
-            this.$axios.post('/api/user/login', loginForm).then(res => {
+            this.$axios.post('/api/auth/login', loginForm).then(res => {
                 if (res.status === 200) {
-                    store.commit('setToken', res.data)
-                    sessionStorage.setItem('accessToken', res.data);
-                    window.alert('로그인하였습니다');
-                    router.push({path:'/'})
+                    this.$store.commit('setToken', res.data.accessToken)
+                    //window.alert('로그인하였습니다');
+                     this.$router.push({path:'/dailylog/posts/bestPosts'})
                 }
             }).catch(() => {
                 window.alert('로그인에 실패하였습니다.')
