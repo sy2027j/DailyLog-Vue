@@ -30,10 +30,12 @@
             </b-navbar-nav>
 
             <b-collapse id="nav-collapse" is-nav>
-                <b-navbar-nav>
+                <b-navbar-nav v-if="!$store.state.token">
+                </b-navbar-nav>
+                <b-navbar-nav v-else>
                     <b-nav-item-dropdown right>
                     <template #button-content>
-                        <em>User ID</em>
+                        <em>{{$store.state.userInfo.nickname }}</em>
                     </template>
                     <b-dropdown-item href="/dailylog/mypage/profile">내 홈</b-dropdown-item>
                     <b-dropdown-item href="/dailylog/mypage/newPost">새글쓰기</b-dropdown-item>

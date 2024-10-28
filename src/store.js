@@ -3,7 +3,8 @@ import persistedState from 'vuex-persistedstate'
  
 const store = new Vuex.Store({
     state: {
-       token: null
+       token: null,
+       userInfo: null
     },
     mutations: {
         setToken(state, token) {
@@ -11,11 +12,15 @@ const store = new Vuex.Store({
         },
         removeToken(state) {
             state.token = null;
+            state.userInfo = null;
+        },
+        setUserInfo(state, userInfo) {
+            state.userInfo = userInfo;
         }
     },
     plugins: [
         persistedState({
-            paths: ['token']
+            paths: ['token', 'userInfo']
         })
     ]
 })

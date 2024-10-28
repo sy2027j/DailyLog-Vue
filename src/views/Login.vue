@@ -4,7 +4,7 @@
             <img alt="Vue logo" src="../assets/dailylog-logo-full.jpg" width="300px">
         </h2>
         <div id="loginFormDiv">
-            <div class="pdb10"><input class="loginInput" id="email" v-model="email" placeholder="아이디"></div>
+            <div class="pdb10"><input class="loginInput" id="email" v-model="email" placeholder="dailylog@email.com"></div>
             <div class="pdb20"><input class="loginInput" id="password" v-model="password" placeholder="비밀번호"></div>
             <div class="pdb10"><button class="loginBtn" id="login" @click="login">로그인</button></div>
         </div>
@@ -35,11 +35,38 @@ export default {
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            isEmailValid: true,
+            isPasswordValid: true
+        }
+    },
+    mounted() {
+        const token = this.$store.state.token
+        if (token) {
+            this.$router.push({path:'/dailylog/posts/bestPosts'})
         }
     },
     methods: {
+        validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            this.isEmailValid = emailRegex.test(this.email);
+        },
+        validatePassword() {
+            this.isPasswordValid = this.password.length >= 8;
+        },
         login() {
+            this.validateEmail();
+            this.validatePassword();
+
+            if (!this.isEmailValid) {
+                alert('유효하지 않은 이메일 형식입니다. 다시 확인해주세요.');
+                return;
+            }
+            if (!this.isPasswordValid) {
+                alert('비밀번호는 영문자와 숫자를 포함하여 최소 8자 이상 작성 해야 합니다. 다시 확인해주세요.');
+                return;
+            }
+
             const loginForm = {
                 email: this.email,
                 password: this.password
@@ -47,14 +74,15 @@ export default {
 
             this.$axios.post('/api/auth/login', loginForm).then(res => {
                 if (res.status === 200) {
-                    this.$store.commit('setToken', res.data.accessToken)
+                    this.$store.commit('setToken', res.data.data.accessToken);
+                    this.$store.commit('setUserInfo', res.data.data.userInfo);
                     //window.alert('로그인하였습니다');
-                     this.$router.push({path:'/dailylog/posts/bestPosts'})
+                    this.$router.push({path:'/dailylog/posts/bestPosts'})
                 }
             }).catch(() => {
                 window.alert('로그인에 실패하였습니다.')
             })
-        }   
+        },
     }
 }
 

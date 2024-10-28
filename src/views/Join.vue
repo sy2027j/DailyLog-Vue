@@ -56,6 +56,12 @@ export default {
             password: '',
         };
     },
+    mounted() {
+        const token = this.$store.state.token
+        if (token) {
+            this.$router.push({path:'/dailylog/posts/bestPosts'})
+        }
+    },
     methods: {
         signup() {
             const signupForm = {
