@@ -81,12 +81,16 @@ export default {
         validateEmail() {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             this.isEmailValid = emailRegex.test(this.email);
-            this.isEmailValid ? this.emailMessage = '유효한 이메일 형식입니다.' : this.emailMessage = '유효하지 않은 이메일 형식입니다.';
+            this.isEmailValid 
+                ? this.emailMessage = '유효한 이메일 형식입니다.' 
+                : this.emailMessage = '유효하지 않은 이메일 형식입니다.';
         },
         validatePassword() {
             const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
             this.isPasswordValid = passwordRegex.test(this.password);
-            this.isPasswordValid ? this.passwordMessage = '비밀번호가 유효합니다.' : this.passwordMessage = '비밀번호는 영문자와 숫자를 포함하여 최소 8자 이상 작성 해야 합니다.';
+            this.isPasswordValid 
+                ? this.passwordMessage = '비밀번호가 유효합니다.' 
+                : this.passwordMessage = '비밀번호는 영문자와 숫자를 포함하여 최소 8자 이상 작성 해야 합니다.';
         },
         validatePasswordMatch() {
             this.isPasswordCheckValid = this.password === this.passwordCheck;
