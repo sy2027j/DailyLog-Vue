@@ -7,22 +7,30 @@
         <div class="pdb20" id="loginFormDiv">
             <div class="pdb10">
                 <span class="block joinInfos">이메일</span>
-                <input class="loginInput" id="email" type="email" v-model="email" required>
+                <input class="loginInput" id="email" type="email" v-model="email" @input="validateEmail" required>
                 <div class="joinInfos flex">
-                    <svg aria-hidden="true" width="15" height="30" focusable="false" data-prefix="far" data-icon="xmark" class="svg-inline--fa fa-xmark " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="font-size: 16px; color: rgb(250, 82, 82);"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
-                    <span class="lh30 txt_red pdl5">확인문구</span>
+                    <svg aria-hidden="true" width="15" height="30" v-if="isEmailValid" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
+                    <svg aria-hidden="true" width="15" height="30" v-else focusable="false" data-prefix="far" data-icon="xmark" class="svg-inline--fa fa-xmark " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="font-size: 16px; color: rgb(250, 82, 82);"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+                    <span class="pdt3 pdl5" :class="{ txt_red: !isEmailValid, txt_green: isEmailValid }" v-if="emailMessage">{{ emailMessage }}</span>
                 </div>
                 </div>
             <div class="pdb20">
                 <span class="block joinInfos">비밀번호</span>
-                <input class="loginInput" id="password" type="password" v-model="password" required>
+                <input class="loginInput" id="password" type="password" v-model="password" @input="validatePassword" required>
                 <div class="joinInfos flex">
-                    <svg aria-hidden="true" width="15" height="30" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
+                    <svg aria-hidden="true" width="15" height="30" v-if="isPasswordValid" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
+                    <svg aria-hidden="true" width="15" height="30" v-else focusable="false" data-prefix="far" data-icon="xmark" class="svg-inline--fa fa-xmark " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="font-size: 16px; color: rgb(250, 82, 82);"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+                    <span class="pdt3 pdl5" :class="{ txt_red: !isPasswordValid, txt_green: isPasswordValid }" v-if="passwordMessage">{{ passwordMessage }}</span>
                 </div>
             </div>
             <div class="pdb20">
                 <span class="block joinInfos">비밀번호 확인</span>
-                <input class="loginInput" id="passwordCheck">
+                <input class="loginInput" id="passwordCheck" type="password" v-model="passwordCheck" @input="validatePasswordMatch" required>
+                <div class="joinInfos flex">
+                    <svg aria-hidden="true" width="15" height="30" v-if="isPasswordCheckValid" focusable="false" data-prefix="far" data-icon="check" class="svg-inline--fa fa-check " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="font-size: 16px; color: rgb(0, 196, 113);"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z"></path></svg>
+                    <svg aria-hidden="true" width="15" height="30" v-else focusable="false" data-prefix="far" data-icon="xmark" class="svg-inline--fa fa-xmark " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="font-size: 16px; color: rgb(250, 82, 82);"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+                    <span class="pdt3 pdl5" :class="{ txt_red: !isPasswordCheckValid, txt_green: isPasswordCheckValid }" v-if="passwordCheckMessage">{{ passwordCheckMessage }}</span>
+                </div>
             </div>
             <div>
                 <button class="loginBtn" @click="signup">회원가입하기</button>
@@ -54,6 +62,13 @@ export default {
         return {
             email: '',
             password: '',
+            passwordCheck: '',
+            isEmailValid: false,
+            emailMessage: '유효하지 않은 이메일 형식입니다.',
+            isPasswordValid: false,
+            passwordMessage: '비밀번호는 영문자와 숫자를 포함하여 최소 8자 이상 작성 해야 합니다.',
+            isPasswordCheckValid: false,
+            passwordCheckMessage: '비밀번호가 일치하지 않습니다.',
         };
     },
     mounted() {
@@ -63,7 +78,34 @@ export default {
         }
     },
     methods: {
+        validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            this.isEmailValid = emailRegex.test(this.email);
+            this.isEmailValid ? this.emailMessage = '유효한 이메일 형식입니다.' : this.emailMessage = '유효하지 않은 이메일 형식입니다.';
+        },
+        validatePassword() {
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            this.isPasswordValid = passwordRegex.test(this.password);
+            this.isPasswordValid ? this.passwordMessage = '비밀번호가 유효합니다.' : this.passwordMessage = '비밀번호는 영문자와 숫자를 포함하여 최소 8자 이상 작성 해야 합니다.';
+        },
+        validatePasswordMatch() {
+            this.isPasswordCheckValid = this.password === this.passwordCheck;
+            this.isPasswordCheckValid 
+                ? this.passwordCheckMessage = '비밀번호가 일치합니다.'
+                : this.passwordCheckMessage = '비밀번호가 일치하지 않습니다.';
+        },
         signup() {
+            if (!this.isEmailValid) {
+                alert(this.emailMessage);
+                return;
+            } else if (!this.isPasswordValid) {
+                alert(this.passwordMessage);
+                return;
+            } else if (!this.isPasswordCheckValid) {
+                alert(this.passwordCheckMessage);
+                return;
+            }
+
             const signupForm = {
                 email: this.email,
                 password: this.password
@@ -97,7 +139,13 @@ export default {
 .txt_red {
     color: rgb(250, 82, 82)
 }
+.txt_green {
+    color: rgb(0, 196, 113);
+}
 .pdl5 {
     padding-left: 5px;
+}
+.pdt3 {
+    padding-top: 3px;
 }
 </style>
