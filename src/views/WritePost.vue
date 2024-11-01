@@ -4,17 +4,17 @@
             <h4 class="txt_left">새글 작성</h4>
             <div class="">
                 <button class="bg_white">취소</button>
-                <button class="bg_dailylog">등록</button>
+                <button class="bg_dailylog"  @click="writePost">등록</button>
             </div>
         </div>
         <div class="contextBox">
             <div class="flex contents">
                 <span class="contentSubject txt_right">글 제목</span>
-                <input class="contentInput" id="postTitle">
+                <input class="contentInput" id="postTitle" v-model="postTitle" @input="validatePostTitle">
             </div>
             <div class="flex contents">
                 <span class="contentSubject txt_right">내용</span>
-                <textarea class="contentInput" rows="14" cols="50" id="postTitle"></textarea>
+                <textarea class="contentInput" rows="13" cols="50" id="postContent" v-model="postContent" @input="validatePostContent"></textarea>
             </div>
             <div class="flex contents">
                 <span class="contentSubject txt_right">공개 범위</span>
@@ -30,9 +30,66 @@ export default {
     name: 'WritePost',
     data() {
         return {
-            visibilityOption: 'public', // 기본 선택값 설정
+            postTitle : '',
+            postContent : '',
+            visibilityOption: 'public',
+            isTitleValid: false,
+            isContentValid: false,
         };
     },
+    methods: {
+        validatePostTitle() {
+            if (this.postTitle.length > 50) {
+                this.postTitle = this.postTitle.slice(0, 50);
+            }
+
+            const restrictedChars = /[<>#]/g;
+            this.postTitle = this.postTitle.replace(restrictedChars, "");
+
+            this.isTitleValid = this.postTitle.length > 0;
+        },
+        validatePostContent() {
+            if (this.postContent.length > 255) {
+                this.postContent = this.postContent.slice(0, 255);
+            }
+
+            const restrictedChars = /[<>#]/g;
+            this.postContent = this.postContent.replace(restrictedChars, "");
+
+            this.isContentValid = this.postContent.length > 0;
+        },
+        writePost() {
+            this.validatePostTitle();
+            this.validatePostContent();
+
+            if (!this.isTitleValid) {
+                alert('글 제목을 작성해 주세요.');
+                return;
+            }
+            if (!this.isContentValid) {
+                alert('글 내용을 작성해 주세요.');
+                return;
+            }
+
+            const postForm = {
+                postTitle: this.postTitle,
+                postContent: this.postContent,
+                postVisible: this.visibilityOption
+            }
+            
+            this.$axios.post('http://localhost:8080/api/post', postForm, {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(res => {
+                if (res.status === 200) {
+                    this.$router.push({ path: '/dailylog/posts/bestPosts' });
+                }
+            }).catch(() => {
+                window.alert('실패하였습니다.');
+            });
+        },
+    }
 }
 </script>
 <style>
@@ -45,14 +102,14 @@ export default {
 .contextBox {
     padding: 10px 40px;
     /* margin: 0px 10%; */
-    border: 2px solid #f1f3f5;
+    border: 2px solid #e1e1e1;
     border-radius: 10px;
 }
 .contents {
     padding-bottom: 10px;
 }
 .contents input, textarea {
-    border: 1px solid #f1f3f5;
+    border: 1px solid #e2e2e2;
     border-radius: 5px;
     resize: none !important;
     padding: 2px 10px;
