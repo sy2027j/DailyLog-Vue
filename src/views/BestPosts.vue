@@ -10,32 +10,67 @@
         </button>
       </div>
       <div class="post-list">
-        <div v-if="loading">Loading...</div>
+        <div v-if="loading">{{loadingMessage}}</div>
         <div v-else>
-          <div v-for="post in posts" :key="post.id" class="post-item">
-            {{ post.title }}
-        <div class="post">
-            <div class="contentTop flex">
-                <img class="mr20" alt="contentsPreviewImg" src="../assets/dailylog-logo.jpg" width="100px">
-                <div class="w100 txt_left">
-                      <div class="font22">{{ post.title }}</div>
-                      <div>{{ post.content }}
-                    </div>
-                </div>                   
-            </div>
-            <div class="contentBottom txt_left">
-                ❤️ 100  💬 20
+          <div v-for="post in posts" :key="post.postId" class="post-item">
+            <div class="post" :id="post.postId">
+              <div class="contentTop flex">
+                  <img class="mr20" alt="contentsPreviewImg" src="../assets/dailylog-logo.jpg" width="100px">
+                  <div class="w100 txt_left">
+                      <div class="font22">{{ post.postTitle }}</div>
+                      <div>{{ post.postContent }}
+                      </div>
+                  </div>                   
               </div>
+              <div class="contentBottom txt_left">
+                  ❤️ {{ post.likeCount }}  💬 {{ post.likeCount }}
+              </div>
+            </div>
           </div>
-            </div>
-            </div>
         </div>
+      </div>
     </div>
 </template>
 <script>
 export default {
     name: 'BestPosts',
-}
+  data() {
+    return {
+      activeTab: 'week',
+      tabs: [
+        { name: '주간 인기 게시글', type: 'week' },
+        { name: '월간 인기 게시글', type: 'month' },
+      ],
+      posts: [],
+      loading: false,
+      loadingMessage: 'Loading...'
+    };
+  },
+  methods: {
+    getPosts(type) {
+      this.activeTab = type;
+      this.loading = true;
+
+      this.$axios.get(`/api/post/best/${type}`, [], {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(res => {
+                if (res.status === 200) {
+                  this.posts = res.data.list;
+                }
+            }).catch((error) => {
+                console.error("게시물 불러오기 오류:", error);
+                this.loadingMessage = '게시물 불러오기 오류';
+            }).finally(() => {
+                this.loading = false;
+            });
+    },
+  },
+  mounted() {
+    this.getPosts(this.activeTab);
+  },
+};
 </script>
 <style>
 .postContents {
@@ -44,7 +79,7 @@ export default {
 .post {
     padding: 10px 40px;
     /* margin: 0px 10%; */
-    border-bottom: 2px solid #f1f3f5;
+    /* border-bottom: 2px solid #f1f3f5; */
     height: 143px;
 }
 .contentTop {
@@ -82,44 +117,45 @@ export default {
   display: flex;
   width: 100%;
   border-bottom: 2px solid #ddd;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
-/* 파일 탭 스타일 */
 .tabs button {
   flex: 1;
   padding: 15px;
   cursor: pointer;
-  background-color: white; /* 흰 배경 */
+  background-color: white;
   font-size: 16px;
-  border: 1px solid #ddd; /* 테두리 */
-  border-bottom: none; /* 아래쪽 테두리를 없애 위로 올라온 느낌을 줌 */
-  border-radius: 10px 10px 0 0; /* 둥근 상단 모서리 */
-  margin-bottom: -1px; /* 살짝 위로 올라오게 */
+  border: 1px solid #ddd;
+  border-bottom: none; 
+  border-radius: 10px 10px 0 0 !important;
+  margin-bottom: -1px;
   transition: background-color 0.3s, color 0.3s;
   text-align: center;
+  margin-left: 0 !important;
 }
 
-/* 활성화된 탭 스타일 */
 .tabs .active {
-  background-color: #f5f5f5; /* 선택된 탭의 배경색 */
-  color: #333; /* 선택된 탭의 텍스트 색상 */
+  background-color: #6dacf5; 
+  color: white; 
   font-weight: bold;
-  border-color: #ccc #ccc white; /* 테두리 색을 맞춤 */
-  z-index: 1; /* 선택된 탭이 위에 보이도록 */
+  border-color: #6dacf5; 
 }
 
-/* 호버 효과 */
 .tabs button:hover {
-  background-color: darkgray;
-}
-
-.post-list {
-  margin-top: 20px;
+  background-color: #3893fb;
+  color: white;
+  font-weight: bold;
 }
 
 .post-item {
   padding: 10px;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+}
+
+.post-item:last-child {
+  margin-bottom: 20px;
 }
 </style>
