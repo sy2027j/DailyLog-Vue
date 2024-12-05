@@ -6,8 +6,6 @@
                 <!-- DAILY LOG -->
             </b-navbar-brand>
 
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
             <b-collapse id="nav-collapse" is-nav right>
                 <b-navbar-nav v-if="!$store.state.token">
                     <b-nav-item class="headMenu" href="/dailylog/login">로그인</b-nav-item>
@@ -35,7 +33,8 @@
                 <b-navbar-nav v-else>
                     <b-nav-item-dropdown right>
                     <template #button-content>
-                        <em>{{$store.state.userInfo.nickname }}</em>
+                        <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image"/>
+                        <span>{{$store.state.userInfo.nickname }}</span>
                     </template>
                     <b-dropdown-item href="/dailylog/mypage/profile">내 홈</b-dropdown-item>
                     <b-dropdown-item href="/dailylog/mypage/newPost">새글쓰기</b-dropdown-item>
@@ -51,14 +50,34 @@ export default {
     name: 'VueHeader',
     methods: {
         logout() {
-            this.$store.commit('setToken',null);
-            alert('로그아웃하였습니다.');
-            this.$router.push({path: '/dailylog/login'})
+            this.$axios.post('/api/auth/logout', [], {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(res => {
+                if (res.status === 200) {
+                    this.$store.commit('setToken',null);
+                    alert('로그아웃하였습니다.');
+                    this.$router.push({path: '/dailylog/login'})
+                }
+            }).catch(() => {
+                window.alert('실패하였습니다.');
+            });
         }
     }
 }
 </script>
 <style>
+.btn, .btn-link, .btn-md, .nav-link, .dropdown-toggle {
+    width: auto !important; /* Bootstrap 기본 스타일 덮어쓰기 */
+}
+.profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
 .topNavBar {
     border-bottom: 2px solid #f1f3f5;
 }
