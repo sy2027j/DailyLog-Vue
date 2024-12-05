@@ -1,28 +1,27 @@
 <template>
     <div class="postContents">
         <div class="flex betweenBox pdt10">
-            <h4 class="txt_left">새글 작성</h4>
-            <div class="">
+            <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
+            <!--<div class="">
                 <button class="bg_white">취소</button>
                 <button class="bg_dailylog"  @click="writePost">등록</button>
+            </div>-->
+            <div class="contextBox">
+            <div class="contents">
+                <input class="contentInput" id="postTitle" v-model="postTitle" @input="validatePostTitle" placeholder="Title">
             </div>
-        </div>
-        <div class="contextBox">
-            <div class="flex contents">
-                <span class="contentSubject txt_right">글 제목</span>
-                <input class="contentInput" id="postTitle" v-model="postTitle" @input="validatePostTitle">
+            <div class="contents">
+                <textarea class="contentInput" rows="13" cols="50" id="postContent" v-model="postContent" @input="validatePostContent" placeholder="Content"></textarea>
             </div>
-            <div class="flex contents">
-                <span class="contentSubject txt_right">내용</span>
-                <textarea class="contentInput" rows="13" cols="50" id="postContent" v-model="postContent" @input="validatePostContent"></textarea>
-            </div>
-            <div class="flex contents">
+            <div class="contents">
                 <span class="contentSubject txt_right">공개 범위</span>
                 <label><input type="radio" name="visibility" value="public" v-model="visibilityOption" selected/> 전체공개</label>
                 <label><input type="radio" name="visibility" value="restricted" v-model="visibilityOption"/> 이웃공개</label>
                 <label><input type="radio" name="visibility" value="private" v-model="visibilityOption"/> 비공개</label>
             </div>
         </div>
+        </div>
+        
     </div>
 </template>
 <script>
@@ -93,6 +92,10 @@ export default {
 }
 </script>
 <style>
+.profile-z {
+  width: 50px;
+  height: 50px;
+}
 .postContents {
     padding: 0 7%;
 }
@@ -100,19 +103,20 @@ export default {
     justify-content: space-between;
 }
 .contextBox {
-    padding: 10px 40px;
-    /* margin: 0px 10%; */
-    border: 2px solid #e1e1e1;
+    width: 100%;
+    border: 1.5px solid #e1e1e1;
     border-radius: 10px;
+    margin-left: 5px;
 }
 .contents {
-    padding-bottom: 10px;
+    padding-top: 15px;
 }
 .contents input, textarea {
     border: 1px solid #e2e2e2;
     border-radius: 5px;
     resize: none !important;
-    padding: 2px 10px;
+    border: none;
+    padding: 2px 20px;
 }
 input:focus, textarea:focus {
   border-color: #6dacf5;
@@ -128,7 +132,7 @@ label {
     padding-right: 20px;
 }
 .contentInput {
-    width: calc(100% - 100px);
+    width: 100%;
 }
 button {
     border: 0.0625rem solid rgb(206, 212, 218);
