@@ -2,26 +2,34 @@
     <div class="postContents">
         <div class="flex betweenBox pdt10">
             <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
-            <!--<div class="">
-                <button class="bg_white">취소</button>
-                <button class="bg_dailylog"  @click="writePost">등록</button>
-            </div>-->
             <div class="contextBox">
-            <div class="contents">
-                <input class="contentInput" id="postTitle" v-model="postTitle" @input="validatePostTitle" placeholder="Title">
-            </div>
-            <div class="contents">
-                <textarea class="contentInput" rows="13" cols="50" id="postContent" v-model="postContent" @input="validatePostContent" placeholder="Content"></textarea>
-            </div>
-            <div class="contents">
-                <span class="contentSubject txt_right">공개 범위</span>
-                <label><input type="radio" name="visibility" value="public" v-model="visibilityOption" selected/> 전체공개</label>
-                <label><input type="radio" name="visibility" value="restricted" v-model="visibilityOption"/> 이웃공개</label>
-                <label><input type="radio" name="visibility" value="private" v-model="visibilityOption"/> 비공개</label>
+                <div class="contents">
+                    <textarea class="contentInput" rows="3" v-model="postContent" @input="adjustHeight" :maxlength="maxLength" ref="textarea"></textarea>
+                    <div v-if="imagePreviews.length > 0" class="image-preview-container">
+                        <div v-for="(image, index) in imagePreviews" :key="index" class="image-preview">
+                            <img :src="image" alt="첨부 이미지" class="preview-image"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="contents flex betweenBox">
+                    <span class="contentSubject txt_left">
+                        <i :class="`mdi ${visivilityIcon}`" class="icon-size"></i>
+                        <select v-model="visibilityOption" @change="updatevisivilityIcon" class="custom-select pr10">
+                            <option value="public">전체 공개</option>
+                            <option value="friends">이웃 공개</option>
+                            <option value="private">비공개</option>
+                        </select>
+                        <i :class="`mdi mdi-image`" class="icon-size" @click="triggerFileInput"></i>
+                        <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" multiple style="display: none;"/>
+                    </span>
+                    <div class="txt_count txt_right">{{ postContent.length }}/{{ maxLength }}</div>
+                </div>
             </div>
         </div>
+        <div class="txt_right pdt10">
+            <button class="bg_white">취소</button>
+            <button class="bg_dailylog"  @click="writePost">등록</button>
         </div>
-        
     </div>
 </template>
 <script>
@@ -29,23 +37,39 @@ export default {
     name: 'WritePost',
     data() {
         return {
-            postTitle : '',
             postContent : '',
             visibilityOption: 'public',
-            isTitleValid: false,
             isContentValid: false,
+            visivilityIcon: 'mdi-home',
+            maxLength: 255,
+            imagePreviews: [],
+            imageFile: [],
         };
     },
     methods: {
-        validatePostTitle() {
-            if (this.postTitle.length > 50) {
-                this.postTitle = this.postTitle.slice(0, 50);
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        handleFileChange(event) {
+            const files = event.target.files;
+            if (this.imagePreviews.length + files.length > 5) {
+                alert("최대 5개까지 이미지를 첨부할 수 있습니다.");
+                return;
             }
-
-            const restrictedChars = /[<>#]/g;
-            this.postTitle = this.postTitle.replace(restrictedChars, "");
-
-            this.isTitleValid = this.postTitle.length > 0;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                this.imagePreviews.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
+                this.imageFile.push(file);
+            }
+        },
+        adjustHeight() {
+            const textarea = this.$refs.textarea;
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
         },
         validatePostContent() {
             if (this.postContent.length > 255) {
@@ -57,44 +81,89 @@ export default {
 
             this.isContentValid = this.postContent.length > 0;
         },
+        updatevisivilityIcon() {
+            if (this.visibilityOption === 'public') {
+                this.visivilityIcon = 'mdi-earth';
+            } else if (this.visibilityOption === 'friends') {
+                this.visivilityIcon = 'mdi-account-multiple';
+            } else if (this.visibilityOption === 'private') {
+                this.visivilityIcon = 'mdi-lock';
+            }
+        },
         writePost() {
-            this.validatePostTitle();
             this.validatePostContent();
 
-            if (!this.isTitleValid) {
-                alert('글 제목을 작성해 주세요.');
-                return;
-            }
             if (!this.isContentValid) {
                 alert('글 내용을 작성해 주세요.');
                 return;
             }
 
-            const postForm = {
-                postTitle: this.postTitle,
-                postContent: this.postContent,
-                postVisible: this.visibilityOption
-            }
-            
-            this.$axios.post('http://localhost:8080/api/post', postForm, {
+            const postForm = new FormData();
+            const json = JSON.stringify({
+                            postContent: this.postContent,
+                            postVisible: this.visibilityOption
+                        });
+            const blob = new Blob([json], { type: "application/json" });
+            postForm.append("postWriteRequest", blob);
+
+            this.imageFile.forEach(file => {
+                postForm.append('postImages[]', file);
+            });
+
+            this.$axios.post('/api/post', postForm, {
                 headers: {
-                    Authorization: `Bearer ${this.$store.state.token}`
+                    Authorization: `Bearer ${this.$store.state.token}`,
                 }
             }).then(res => {
                 if (res.status === 200) {
                     this.$router.push({ path: '/dailylog/posts/bestPosts' });
                 }
-            }).catch(() => {
+            }).catch(error => {
                 window.alert('실패하였습니다.');
+                console.error('응답 에러:', error);
             });
         },
-    }
+    },
+    mounted() {
+        this.updatevisivilityIcon();
+    },
 }
 </script>
 <style>
 .profile-z {
   width: 50px;
   height: 50px;
+}
+select.custom-select {
+  padding-left: 5px;
+  padding-right: 15px;
+  border: none;
+  outline: none;
+  background: none;
+  vertical-align: middle;
+  margin-top: 3px;
+}
+.icon-size {
+  font-size: 23px;
+  vertical-align: middle;
+}
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .postContents {
     padding: 0 7%;
@@ -110,6 +179,9 @@ export default {
 }
 .contents {
     padding-top: 15px;
+}
+.contents:last-child {
+    padding-bottom: 15px;
 }
 .contents input, textarea {
     border: 1px solid #e2e2e2;
@@ -127,9 +199,9 @@ label {
     padding-right: 15px;
 }
 .contentSubject {
-    width: 100px;
+    width: 200px;
     display: block;
-    padding-right: 20px;
+    padding: 0 20px;
 }
 .contentInput {
     width: 100%;
@@ -152,6 +224,9 @@ button {
 .pd10 {
     padding: 10px;
 }
+.pr10 {
+    padding-right: 10px;
+}
 .txt_right {
     text-align: right;
 }
@@ -160,10 +235,16 @@ button {
 }
 .bg_white {
     background-color: white;
+    border: 0.0625rem solid rgb(206, 212, 218)
 }
 .bg_dailylog {
     border: 0.0625rem solid #0099e5 !important;
     background-color: #0099e5;
     color: white;
+}
+.txt_count{
+    color:#b1b1b1;
+    padding: 0 20px;
+    margin-top: 15px;
 }
 </style>
