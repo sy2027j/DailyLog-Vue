@@ -22,9 +22,7 @@
         <b-navbar toggleable="lg" type="light" variant="white">
             <b-navbar-nav class="first">
                 <b-nav-item class="menuTitle" href="/dailylog/posts/bestPosts">BEST</b-nav-item>
-                <b-nav-item class="menuTitle" href="/dailylog/posts/recommendPosts">추천글</b-nav-item>
-                <b-nav-item class="menuTitle" href="/dailylog/posts/subscribePosts">이웃글</b-nav-item>
-                <b-nav-item class="menuTitle" href="/dailylog/posts/allPosts">전체글</b-nav-item>
+                <b-nav-item class="menuTitle" href="/dailylog/posts/subscribePosts">구독</b-nav-item>
             </b-navbar-nav>
 
             <b-collapse id="nav-collapse" is-nav>
