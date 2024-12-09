@@ -1,5 +1,5 @@
 <template>
-    <div class="postContents">
+    <div class="postContentsDiv">
       <div class="tabs">
         <button
           v-for="(tab, index) in tabs"
@@ -13,17 +13,30 @@
         <div v-if="loading">{{loadingMessage}}</div>
         <div v-else>
           <div v-for="post in posts" :key="post.postId" class="post-item">
-            <div class="post" :id="post.postId">
-              <div class="contentTop flex">
-                  <img class="mr20" alt="contentsPreviewImg" src="../assets/dailylog-logo.jpg" width="100px">
-                  <div class="w100 txt_left">
-                      <div class="font22">{{ post.postTitle }}</div>
-                      <div>{{ post.postContent }}
-                      </div>
-                  </div>                   
-              </div>
-              <div class="contentBottom txt_left">
-                  ❤️ {{ post.likeCount }}  💬 {{ post.likeCount }}
+            <div :id="post.postId">
+              <div class="flex betweenBox pdt10">
+                <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
+                <div class="postContents">
+                  <div class="flex betweenBox">
+                        <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
+                        <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
+                    </div>
+                    <div class="contextBox">
+                      <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
+                    </div>
+                    <div class="flex betweenBox">
+                        <span class="pdt3 contentSubject txt_left">
+                          <div v-if="post.liked">
+                              <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                              <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                          </div>
+                          <div v-else>
+                            <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                            <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                          </div>
+                        </span>
+                    </div>
+                </div>
               </div>
             </div>
           </div>
@@ -43,18 +56,22 @@ export default {
       ],
       posts: [],
       loading: false,
-      loadingMessage: 'Loading...'
+      loadingMessage: 'Loading...',
+      maxLength:150,
     };
   },
   methods: {
+    truncateText(content) {
+      if (content.length > this.maxLength) {
+        return content.substring(0, this.maxLength) + "...";
+      }
+      return content;
+    },
     getPosts(type) {
       this.activeTab = type;
       this.loading = true;
 
       this.$axios.get(`/api/post/best/${type}`, [], {
-                headers: {
-                    Authorization: `Bearer ${this.$store.state.token}`
-                }
             }).then(res => {
                 if (res.status === 200) {
                   this.posts = res.data.list;
@@ -73,53 +90,45 @@ export default {
 };
 </script>
 <style>
-.postContents {
+.postContentsDiv {
     padding: 0 7%;
+}
+.postContentsDiv .postContents {
+    width: 100%;
+    padding: 0px
+}
+.postContentsDiv .contentSubject {
+    width: 200px;
+    display: block;
+    padding: 0 5px;
+}
+.postContentsDiv .contentSubject.bottom {
+    padding-bottom: 5px;
+}
+.contentSubject span {
+    vertical-align: middle;
+    margin-right: 15px;
+    margin-left: 5px;
 }
 .post {
     padding: 10px 40px;
-    /* margin: 0px 10%; */
-    /* border-bottom: 2px solid #f1f3f5; */
     height: 143px;
-}
-.contentTop {
-    height: 100px;
-}
-.contentBottom {
-    height: 23px;
 }
 .flex {
     display: flex;
 }
-.w100 {
-    width: 100%;
-}
 .pd10 {
     padding: 10px;
-}
-.wpd10 {
-    padding: 10px 0px;
-}
-.hpd10 {
-    padding: 0px 10px;
-}
-.font22 {
-    font-size: 22px;
-}
-.mr20 {
-    margin-right: 20px;
 }
 .txt_left {
     text-align: left;
 }
-
 .tabs {
   display: flex;
   width: 100%;
   border-bottom: 2px solid #ddd;
   margin-top: 20px;
 }
-
 .tabs button {
   flex: 1;
   padding: 15px;
@@ -134,28 +143,40 @@ export default {
   text-align: center;
   margin-left: 0 !important;
 }
-
 .tabs .active {
   background-color: #6dacf5; 
   color: white; 
   font-weight: bold;
   border-color: #6dacf5; 
 }
-
 .tabs button:hover {
   background-color: #3893fb;
   color: white;
   font-weight: bold;
 }
-
 .post-item {
-  padding: 10px;
+  padding: 15px 30px;
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
 }
-
 .post-item:last-child {
   margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+.contentInputDiv {
+  width: 100%;
+  min-height: 40px;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  padding: 10px 20px;
+  text-align: left;
+  color: black;
+}
+.gray{
+  color: gray;
 }
 </style>

@@ -27,7 +27,6 @@
             </div>
         </div>
         <div class="txt_right pdt10">
-            <button class="bg_white">취소</button>
             <button class="bg_dailylog"  @click="writePost">등록</button>
         </div>
     </div>
