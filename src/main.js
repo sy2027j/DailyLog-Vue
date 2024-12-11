@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { router } from './router'
 import store from './store'
-import axios from 'axios'
+import apiClient from './apiClient';
 
 import BootstrapVue3 from 'bootstrap-vue-3'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -21,7 +21,7 @@ const vuetify = createVuetify({
     directives,
   });
 
-app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$axios = apiClient;
 app.use(BootstrapVue3);
 app.use(router);
 app.use(store);
