@@ -54,7 +54,7 @@ export default {
                 }
             }).then(res => {
                 if (res.status === 200) {
-                    this.$store.commit('setToken',null);
+                    this.$store.commit('removeToken')
                     alert('로그아웃하였습니다.');
                     this.$router.push({path: '/dailylog/login'})
                 }

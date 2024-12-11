@@ -14,7 +14,7 @@
         }
         this.$axios.post('/api/auth/user', loginForm).then(res => {
           if (res.status === 200) {
-              this.$store.commit('setToken', res.data.data.accessToken);
+              this.$store.commit('setToken', res.headers['authorization'].split(' ')[1]);
               this.$store.commit('setUserInfo', res.data.data.userInfo);
               this.$router.push({path:'/dailylog/posts/bestPosts'})
           }
