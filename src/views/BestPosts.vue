@@ -15,7 +15,7 @@
           <div v-for="post in posts" :key="post.postId" class="post-item">
             <div :id="post.postId">
               <div class="flex betweenBox pdt10">
-                <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
+                <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z"/>
                 <div class="postContents">
                   <div class="flex betweenBox">
                         <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
