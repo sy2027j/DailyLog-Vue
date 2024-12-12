@@ -20,14 +20,14 @@
                   </div>
                   <div class="flex betweenBox">
                     <span class="pdt3 contentSubject txt_left">
-                      <div v-if="post.liked">
-                        <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                      </div>
-                      <div v-else>
-                        <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                      </div>
+                      <i
+                        :class="post.likedByUser ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"
+                        class="icon-size"
+                        @click="toggleLike(post)"
+                      ></i>
+                      <span>{{ post.likeCount }}</span>
+                      <i class="mdi mdi-message-outline icon-size" @click="goToPostDetail(post.postId)"></i>
+                      <span @click="goToPostDetail(post.postId)">{{ post.commentCount }}</span>
                     </span>
                   </div>
                 </div>
@@ -61,6 +61,22 @@ export default {
         }
         return content;
     },
+    toggleLike(post) {
+      const apiUrl = `/api/like/${post.postId}`;
+      
+      const request = post.likedByUser
+        ? this.$axios.delete(apiUrl)
+        : this.$axios.post(apiUrl);
+
+      request
+        .then(() => {
+          post.likedByUser = !post.likedByUser;
+          post.likeCount += post.likedByUser ? 1 : -1;
+        })
+        .catch((error) => {
+          console.error('좋아요 요청 실패:', error);
+        });
+    },
     getPosts() {
         this.loading = true;
         this.$axios.get('/api/post/neighbors', [], {
@@ -80,6 +96,9 @@ export default {
     },
     closeImage() {
       this.selectedImage = null;
+    },
+    goToPostDetail(postId) {
+      this.$router.push(`/dailylog/posts/${postId}`);
     },
   },
   mounted() {

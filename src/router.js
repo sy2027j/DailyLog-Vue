@@ -6,6 +6,7 @@ import Login from "./views/Login";
 import Join from "./views/Join";
 import Redirect from "./views/UserRedirect";
 import WritePost from "./views/WritePost.vue";
+import PostDetail from './views/PostDetail.vue';
 
 const routes = [
     {path:"/dailylog/login", component: Login},
@@ -13,7 +14,8 @@ const routes = [
     {path:"/dailylog/posts/bestPosts", component: BestPosts},
     {path:"/dailylog/posts/subscribePosts", component: SubscribePosts},
     {path:"/dailylog/oauth2/redirect", component: Redirect},
-    {path:"/dailylog/mypage/newPost", component: WritePost}
+    {path:"/dailylog/mypage/newPost", component: WritePost},
+    {path:"/dailylog/posts/:postId", component: PostDetail},
 ]
 
 const router = createRouter({
