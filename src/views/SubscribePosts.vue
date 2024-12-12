@@ -9,24 +9,27 @@
                 <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z"/>
                 <div class="postContents">
                   <div class="flex betweenBox">
-                        <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
-                        <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
+                    <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
+                    <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
+                  </div>
+                  <div class="contextBox">
+                    <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
+                    <div v-if="post.postImageUrls.length" class="image-list">
+                      <img v-for="(image, index) in post.postImageUrls" :key="index" :src="image" class="post-image" @click="showImage(image)" alt="게시물 이미지" />
                     </div>
-                    <div class="contextBox">
-                      <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
-                    </div>
-                    <div class="flex betweenBox">
-                        <span class="pdt3 contentSubject txt_left">
-                          <div v-if="post.liked">
-                              <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                              <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                          </div>
-                          <div v-else>
-                            <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                            <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                          </div>
-                        </span>
-                    </div>
+                  </div>
+                  <div class="flex betweenBox">
+                    <span class="pdt3 contentSubject txt_left">
+                      <div v-if="post.liked">
+                        <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                      </div>
+                      <div v-else>
+                        <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                      </div>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -34,54 +37,77 @@
         </div>
       </div>
     </div>
+    <div v-if="selectedImage" class="image-viewer" @click="closeImage">
+      <img :src="selectedImage" alt="클릭한 이미지" />
+    </div>
 </template>
 <script>
 export default {
-    name: 'SubscribePosts',
-    data() {
-        return {
-        activeTab: 'week',
-        posts: [],   
-        loading: false,
-        loadingMessage: 'Loading...',
-        maxLength:150,
-        };
+  name: 'SubscribePosts',
+  data() {
+    return {
+      activeTab: 'week',
+      posts: [],   
+      loading: false,
+      loadingMessage: 'Loading...',
+      maxLength:150,
+      selectedImage: null,
+    };
+  },
+  methods: {
+    truncateText(content) {
+        if (content.length > this.maxLength) {
+            return content.substring(0, this.maxLength) + "...";
+        }
+        return content;
     },
-    methods: {
-        truncateText(content) {
-            if (content.length > this.maxLength) {
-                return content.substring(0, this.maxLength) + "...";
-            }
-            return content;
-        },
-        getPosts() {
-            this.loading = true;
-            this.$axios.get('/api/post/neighbors', {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.token}`
-                    }
-                }).then(res => {
-                    if (res.status === 200) {
-                    this.posts = res.data.list;
-                    this.adjustTextareaHeight();
-                    }
-                }).catch((error) => {
-                    console.error("게시물 불러오기 오류:", error);
-                    this.loadingMessage = '게시물 불러오기 오류';
-                }).finally(() => {
-                    this.loading = false;
-                });
-        },
+    getPosts() {
+        this.loading = true;
+        this.$axios.get('/api/post/neighbors', [], {
+            }).then(res => {
+                if (res.status === 200) {
+                  this.posts = res.data.list;
+                }
+            }).catch((error) => {
+                console.error("게시물 불러오기 오류:", error);
+                this.loadingMessage = '게시물 불러오기 오류';
+            }).finally(() => {
+                this.loading = false;
+            });
     },
-    mounted() {
-        this.getPosts();
-        //this.$store.commit('setToken',null);
+    showImage(image) {
+      this.selectedImage = image;
     },
+    closeImage() {
+      this.selectedImage = null;
+    },
+  },
+  mounted() {
+    this.getPosts();
+  },
 };
 </script>
 <style>
+.subScribePostContentsDiv {
+    padding: 0 7%;
+}
 .subScribePostContentsDiv .post-item {
     padding: 15px 30px;
     border: none !important;
+}
+.subScribePostContentsDiv .postContents {
+  padding: 0 !important;
+  width: 100%;
+}
+.subScribePostContentsDiv .contextBox {
+  margin-left: 5px;
+}
+.subScribePostContentsDiv .contentSubject.bottom {
+    padding-bottom: 5px;
+}
+.subScribePostContentsDiv .contentSubject {
+    width: 200px;
+    display: block;
+    padding: 0 5px;
 }
 </style>

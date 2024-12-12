@@ -18,24 +18,27 @@
                 <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z"/>
                 <div class="postContents">
                   <div class="flex betweenBox">
-                        <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
-                        <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
+                    <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
+                    <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
+                  </div>
+                  <div class="contextBox">
+                    <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
+                    <div v-if="post.postImageUrls.length" class="image-list">
+                      <img v-for="(image, index) in post.postImageUrls" :key="index" :src="image" class="post-image" @click="showImage(image)" alt="게시물 이미지" />
                     </div>
-                    <div class="contextBox">
-                      <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
-                    </div>
-                    <div class="flex betweenBox">
-                        <span class="pdt3 contentSubject txt_left">
-                          <div v-if="post.liked">
-                              <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                              <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                          </div>
-                          <div v-else>
-                            <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                            <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
-                          </div>
-                        </span>
-                    </div>
+                  </div>
+                  <div class="flex betweenBox">
+                    <span class="pdt3 contentSubject txt_left">
+                      <div v-if="post.liked">
+                        <i :class="`mdi mdi-heart`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                      </div>
+                      <div v-else>
+                        <i :class="`mdi mdi-heart-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                        <i :class="`mdi mdi-message-outline`" class="icon-size"></i><span>{{ post.likeCount }}</span>
+                      </div>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -43,10 +46,13 @@
         </div>
       </div>
     </div>
+    <div v-if="selectedImage" class="image-viewer" @click="closeImage">
+      <img :src="selectedImage" alt="클릭한 이미지" />
+    </div>
 </template>
 <script>
 export default {
-    name: 'BestPosts',
+  name: 'BestPosts',
   data() {
     return {
       activeTab: 'week',
@@ -58,6 +64,7 @@ export default {
       loading: false,
       loadingMessage: 'Loading...',
       maxLength:150,
+      selectedImage: null,
     };
   },
   methods: {
@@ -82,6 +89,12 @@ export default {
             }).finally(() => {
                 this.loading = false;
             });
+    },
+    showImage(image) {
+      this.selectedImage = image;
+    },
+    closeImage() {
+      this.selectedImage = null;
     },
   },
   mounted() {
@@ -178,5 +191,35 @@ export default {
 }
 .gray{
   color: gray;
+}
+.image-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0px 20px 10px 20px;
+}
+.post-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.image-viewer img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
 }
 </style>
