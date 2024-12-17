@@ -39,10 +39,14 @@
                                         <div>{{ comment.commentText }}</div>
                                         <div class="flex betweenBox">
                                             <span class="pdt3 contentSubject txt_left pd0">
-                                                <i class="mdi mdi-chat-plus-outline icon-size"></i>
+                                                <i class="mdi mdi-chat-plus-outline icon-size" @click="toggleReplyInput(comment.commentId)"></i>
                                             </span>
                                         </div>
                                     </div>
+                                </div>
+                                <div v-if="activeReplyId === comment.commentId" class="reply-input-container txt_right">
+                                    <textarea placeholder="답글을 입력하세요..." v-model="replyText" class="reply-textarea"></textarea>
+                                    <button @click="submitReply(comment.commentId)" class="replyBtn">답글 달기</button>
                                 </div>
                             </div>
                             <div v-if="comment.childComments && comment.childComments.length > 0">
@@ -59,10 +63,14 @@
                                                 <div>{{ child.commentText }}</div>
                                                 <div class="flex betweenBox">
                                                     <span class="pdt3 contentSubject txt_left pd0">
-                                                        <i class="mdi mdi-chat-plus-outline icon-size"></i>
+                                                        <i class="mdi mdi-chat-plus-outline icon-size" @click="toggleReplyInput(child.commentId)"></i>
                                                     </span>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div v-if="activeReplyId === child.commentId" class="child reply-input-container txt_right">
+                                            <textarea placeholder="답글을 입력하세요..." v-model="replyText" class="reply-textarea"></textarea>
+                                            <button @click="submitReply(child.commentId)" class="replyBtn">답글 달기</button>
                                         </div>
                                     </div>
                                 </div>
@@ -91,7 +99,9 @@ export default {
             post: {
                 postImageUrls: []
             },
-            comments: []
+            comments: [],
+            activeReplyId: null,
+            replyText: "",
         };
     },
     methods: {
@@ -147,6 +157,9 @@ export default {
         closeImage() {
             this.selectedImage = null;
         },
+        toggleReplyInput(commentId) {
+            this.activeReplyId = this.activeReplyId === commentId ? null : commentId;
+        },
     },
     mounted() {
         this.getPosts();
@@ -172,8 +185,8 @@ export default {
 .contentInput {
     padding: 10px 20px;
 }
-.comment-item, .child-comment, .grandchild-comment {
-    margin-left: 30px;
+.child-comment {
+    margin-left: 50px;
 }
 .commentContainer {
     border-bottom: 1px solid #e1e1e1;
@@ -182,5 +195,28 @@ export default {
 }
 .comment {
     margin: 0 15px;
+}
+.reply-input-container {
+    margin: 10px 20px 10px 70px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.reply-textarea {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.replyBtn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    width: 78px;
+    height: 35px;
+}
+.child.reply-input-container {
+    margin: 10px 20px 10px 20px;
 }
 </style>
