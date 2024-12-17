@@ -70,7 +70,7 @@
                                         </div>
                                         <div v-if="activeReplyId === child.commentId" class="child reply-input-container txt_right">
                                             <textarea placeholder="답글을 입력하세요..." v-model="replyText" class="reply-textarea"></textarea>
-                                            <button @click="submitReply(child.commentId)" class="replyBtn">답글 달기</button>
+                                            <button @click="submitReply(child.upperId)" class="replyBtn">답글 달기</button>
                                         </div>
                                     </div>
                                 </div>
@@ -78,6 +78,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="stand reply-input-container txt_right">
+                    <textarea placeholder="답글을 입력하세요..." v-model="replyText" class="reply-textarea"></textarea>
+                    <button @click="submitReply(null)" class="replyBtn">답글 달기</button>
                 </div>
             </div>
         </div>
@@ -160,6 +164,26 @@ export default {
         toggleReplyInput(commentId) {
             this.activeReplyId = this.activeReplyId === commentId ? null : commentId;
         },
+        submitReply(upperId) {
+            if (this.replyText.trim() === "") {
+                alert("답글을 입력하세요.");
+                return;
+            }
+            const replyParam = {
+                postId : this.postId,
+                commentText: this.replyText,
+                upperId : upperId 
+            };
+            this.$axios.post(`/api/comment`, replyParam)
+                .then(() => {
+                    this.replyText = "";
+                    this.activeReplyId = null;
+                    this.getPosts();
+                })
+                .catch((error) => {
+                    console.error("답글 작성 실패:", error);
+                });
+        },
     },
     mounted() {
         this.getPosts();
@@ -218,5 +242,8 @@ export default {
 }
 .child.reply-input-container {
     margin: 10px 20px 10px 20px;
+}
+.stand.reply-input-container {
+    margin: 20px;
 }
 </style>
