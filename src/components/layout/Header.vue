@@ -34,9 +34,9 @@
                         <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image"/>
                         <span>{{$store.state.userInfo.nickname }}</span>
                     </template>
-                    <b-dropdown-item href="/dailylog/mypage/profile">내 홈</b-dropdown-item>
-                    <b-dropdown-item href="/dailylog/mypage/newPost">새글쓰기</b-dropdown-item>
-                    <b-dropdown-item href="/dailylog/mypage/personalInfomation">내 정보</b-dropdown-item>
+                    <b-dropdown-item :href="`/dailylog/mypage/home/${$store.state.userInfo.email}`">내 홈</b-dropdown-item>
+                    <b-dropdown-item href="/dailylog/mypage/newPost">새 글쓰기</b-dropdown-item>
+                    <b-dropdown-item href="/dailylog/mypage/myInfo">내 정보</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>
@@ -49,9 +49,6 @@ export default {
     methods: {
         logout() {
             this.$axios.post('/api/auth/logout', [], {
-                headers: {
-                    Authorization: `Bearer ${this.$store.state.token}`
-                }
             }).then(res => {
                 if (res.status === 200) {
                     this.$store.commit('removeToken')
