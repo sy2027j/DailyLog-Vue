@@ -4,7 +4,7 @@ import persistedState from 'vuex-persistedstate'
 const store = new Vuex.Store({
     state: {
        token: null,
-       userInfo: null
+       userInfo: null,
     },
     mutations: {
         setToken(state, token) {
@@ -16,11 +16,17 @@ const store = new Vuex.Store({
         },
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;
+        },
+        updateUserProfile(state, { profile, nickname }) {
+            if (state.userInfo) {
+                if (profile !== undefined) state.userInfo.profile = profile;
+                if (nickname !== undefined) state.userInfo.nickname = nickname;
+            }
         }
     },
     plugins: [
         persistedState({
-            paths: ['token', 'userInfo']
+            paths: ['token', 'userInfo'] 
         })
     ]
 })
