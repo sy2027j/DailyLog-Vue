@@ -2,19 +2,19 @@
     <div class="infoContents">
         <div class="flex betweenBox pdt10 homeProfile">
             <div> 
-                <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-n"/>
+                <img :src="userHomeInfo.profile" alt="프로필 사진" class="profile-image profile-n"/>
             </div>
             <div class="profileBox">
                 <div class="pdb10">
-                    <strong class="block profileInfos">{{$store.state.userInfo.nickname}}</strong>
+                    <strong class="block profileInfos">{{userHomeInfo.nickname}}</strong>
                 </div>
                 <div class="pdb10 flex profileInfos">
-                    <strong class="block">3</strong><span class="block">팔로잉</span>
-                    <strong class="block ml10">3</strong><span class="block">팔로워</span>
+                    <strong class="block">{{userHomeInfo.following}}</strong><span class="block">팔로잉</span>
+                    <strong class="block ml10">{{userHomeInfo.followers}}</strong><span class="block">팔로워</span>
                 </div>
             </div>
-            <div v-if="$store.state.userInfo.profile !== email">
-                <button class="followBtn" @click="toggleFollow">{{ follow ? '언팔로우' : '팔로우' }}</button>
+            <div v-if="$store.state.userInfo && $store.state.userInfo.email !== email">
+                <button class="followBtn" @click="toggleFollow">{{ userHomeInfo.isFollowing ? '언팔로우' : '팔로우' }}</button>
             </div>
         </div>
         <div class="subScribePostContentsDiv">
@@ -32,7 +32,7 @@
                       </div>
                       <div class="contextBox">
                         <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
-                        <div v-if="post.postImageUrls.length" class="image-list">
+                        <div v-if="post.postImageUrls" class="image-list">
                           <img v-for="(image, index) in post.postImageUrls" :key="index" :src="image" class="post-image" @click="showImage(image)" alt="게시물 이미지" />
                         </div>
                       </div>
@@ -63,15 +63,20 @@
 <script>
 export default {
     name: 'MyHome',
+    computed: {
+        email() {
+            return this.$route.params.email;
+        },
+    },
     data() {
         return {
-            email: '',
+            userEmail: '',
             nickname: '',
             socialLogin: [],
             previewUrl: null,
-            follow: true,
             loading: false,
             maxLength:150,
+            userHomeInfo: [],
             posts: []
         };
     },
@@ -91,21 +96,38 @@ export default {
 
             request
                 .then(() => {
-                post.likedByUser = !post.likedByUser;
-                post.likeCount += post.likedByUser ? 1 : -1;
+                    post.likedByUser = !post.likedByUser;
+                    post.likeCount += post.likedByUser ? 1 : -1;
                 })
                 .catch((error) => {
-                console.error('좋아요 요청 실패:', error);
+                    console.error('좋아요 요청 실패:', error);
+                });
+        },
+        toggleFollow(targetId) {
+            const apiUrl = `/api/user/subscribe/${targetId}`;
+            
+            const request = this.userHomeInfo.isFollowing
+                ? this.$axios.delete(apiUrl)
+                : this.$axios.post(apiUrl);
+
+            request
+                .then(() => {
+                    this.userHomeInfo.isFollowing = !this.userHomeInfo.isFollowing;
+                    this.userHomeInfo.isFollowing += this.userHomeInfo.followers ? 1 : -1;
+                })
+                .catch((error) => {
+                console.error('팔로우 요청 실패:', error);
                 });
         },
         goToPostDetail(postId) {
             this.$router.push(`/dailylog/posts/${postId}`);
         },
-        getInfo() {
-            this.$axios.get(`/api/user`, [], {
+        getUserHome() {
+            this.$axios.get(`/api/post/user/${this.email}`, [], {
             }).then(res => {
                 if (res.status === 200) {
-                    console.log('성공:');
+                    this.userHomeInfo = res.data.data;
+                    this.posts = res.data.data.posts;
                 }
             }).catch((error) => {
                 console.error("불러오기 오류:", error);
@@ -120,7 +142,7 @@ export default {
         },
     },
     mounted() {
-        this.getUser()
+        this.getUserHome()
     },
 }
 </script>
