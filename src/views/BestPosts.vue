@@ -15,13 +15,13 @@
           <div v-for="post in posts" :key="post.postId" class="post-item">
             <div :id="post.postId">
               <div class="flex betweenBox pdt10">
-                <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z"/>
+                <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z" @click="goToUserHome(post.email)"/>
                 <div class="postContents">
                   <div class="flex betweenBox">
-                    <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
+                    <span class="contentSubject txt_left bottom" @click="goToUserHome(post.email)">{{ post.authorNickname }}</span>
                     <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
                   </div>
-                  <div class="contextBox">
+                  <div class="contextBox" @click="goToPostDetail(post.postId)">
                     <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
                     <div v-if="post.postImageUrls.length" class="image-list">
                       <img v-for="(image, index) in post.postImageUrls" :key="index" :src="image" class="post-image" @click="showImage(image)" alt="게시물 이미지" />
@@ -42,6 +42,9 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div v-if="posts.length === 0" class="no-posts">
+            게시물이 없습니다.
           </div>
         </div>
       </div>
@@ -115,6 +118,9 @@ export default {
     goToPostDetail(postId) {
       this.$router.push(`/dailylog/posts/${postId}`);
     },
+    goToUserHome(userEmail) {
+      this.$router.push(`/dailylog/user/home/${userEmail}`);
+    }
   },
   mounted() {
     this.getPosts(this.activeTab);
@@ -240,5 +246,11 @@ export default {
   max-width: 90%;
   max-height: 90%;
   border-radius: 10px;
+}
+.no-posts {
+  padding: 15px 30px;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 </style>

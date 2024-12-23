@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div v-if="$store.state.userInfo && $store.state.userInfo.email !== email">
-                <button class="followBtn" @click="toggleFollow">{{ userHomeInfo.isFollowing ? '언팔로우' : '팔로우' }}</button>
+                <button class="followBtn" @click="toggleFollow(userHomeInfo.userId)">{{ userHomeInfo.isFollowing ? '언팔로우' : '팔로우' }}</button>
             </div>
         </div>
         <div class="subScribePostContentsDiv">
@@ -30,7 +30,7 @@
                         <span class="contentSubject txt_left bottom">{{ post.authorNickname }}</span>
                         <span class="contentSubject txt_right bottom gray">{{ post.createdAt }}</span>
                       </div>
-                      <div class="contextBox">
+                      <div class="contextBox" @click="goToPostDetail(post.postId)">
                         <div class="contentInputDiv" ref="contentDiv" v-html="truncateText(post.postContent)" readonly></div>
                         <div v-if="post.postImageUrls" class="image-list">
                           <img v-for="(image, index) in post.postImageUrls" :key="index" :src="image" class="post-image" @click="showImage(image)" alt="게시물 이미지" />
@@ -109,11 +109,11 @@ export default {
             const request = this.userHomeInfo.isFollowing
                 ? this.$axios.delete(apiUrl)
                 : this.$axios.post(apiUrl);
-
+            
             request
                 .then(() => {
                     this.userHomeInfo.isFollowing = !this.userHomeInfo.isFollowing;
-                    this.userHomeInfo.isFollowing += this.userHomeInfo.followers ? 1 : -1;
+                    this.userHomeInfo.followers += this.userHomeInfo.isFollowing ? 1 : -1;
                 })
                 .catch((error) => {
                 console.error('팔로우 요청 실패:', error);

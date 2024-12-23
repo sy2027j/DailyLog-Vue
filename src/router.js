@@ -19,6 +19,7 @@ const routes = [
     {path:"/dailylog/mypage/newPost", component: WritePost},
     {path:"/dailylog/posts/:postId", component: PostDetail},
     {path:"/dailylog/mypage/home/:email", component: UserHome},
+    {path:"/dailylog/user/home/:email", component: UserHome},
     {path:"/dailylog/mypage/myInfo", component: MyInfo},
 ]
 
