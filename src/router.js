@@ -20,7 +20,7 @@ const routes = [
     {path:"/dailylog/mypage/newPost", component: WritePost, meta: { requiresAuth: true }},
     {path:"/dailylog/posts/:postId", component: PostDetail},
     {path:"/dailylog/mypage/home/:email", component: UserHome, meta: { requiresAuth: true }},
-    {path:"/dailylog/user/home/:email", component: UserHome, meta: { requiresAuth: true }},
+    {path:"/dailylog/user/home/:email", component: UserHome},
     {path:"/dailylog/mypage/myInfo", component: MyInfo, meta: { requiresAuth: true }},
 ]
 
