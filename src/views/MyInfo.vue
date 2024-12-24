@@ -71,7 +71,7 @@ export default {
                     alert('회원탈퇴하였습니다.');
                     this.$router.push({path: '/dailylog/login'})
                 }).catch((error) => {
-                    console.error("연동 해지 실패:", error);
+                    console.error("회원탈퇴 실패:", error);
                 });
         },
         validateNickname() {

@@ -47,6 +47,11 @@
                           <i class="mdi mdi-message-outline icon-size" @click="goToPostDetail(post.postId)"></i>
                           <span @click="goToPostDetail(post.postId)">{{ post.commentCount }}</span>
                         </span>
+                        <div v-if="$store.state.userInfo && $store.state.userInfo.email == email">
+                            <div class="txt_right">
+                                <button class="bg_cancle" @click="deletePost(post.postId)">삭제</button>
+                            </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -121,6 +126,17 @@ export default {
         },
         goToPostDetail(postId) {
             this.$router.push(`/dailylog/posts/${postId}`);
+        },
+        deletePost(postId) {
+            this.$axios.delete(`/api/post/${postId}`, { 
+                }).then(() => {
+                    const index = this.posts.findIndex(post => post.postId === postId);
+                    if (index !== -1) {
+                        this.posts.splice(index, 1);
+                    }
+                }).catch((error) => {
+                    console.error("게시글 삭제 실패:", error);
+                });
         },
         getUserHome() {
             this.$axios.get(`/api/post/user/${this.email}`, [], {
