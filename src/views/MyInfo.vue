@@ -22,11 +22,11 @@
                             <img :alt="`${socialAccount.provider} logo`" :src="require(`../assets/socialLogin/btn_${socialAccount.provider}.svg`)" width="30px">
                             <label>{{ getProviderName(socialAccount.provider) }}</label>
                         </div>
-                        <button class="bg_cancle" @click="disconnectProvider(socialAccount.id)">연결 해제</button>
                     </div>
                 </div>
                 <div class="pdt10 userInfos userBtn">
                     <button class="bg_save"  @click="saveUserInfo">저장</button>
+                    <button class="bg_cancle" @click="deleteAccount">회원 탈퇴</button>
                 </div>
             </div>
         </div>
@@ -64,17 +64,12 @@ export default {
             };
             return providerNames[provider] || provider;
         },
-        disconnectProvider(accountId) {
-            alert(accountId)
-            this.$axios.delete(`/api/user/social`, { 
-                    params: { socialAccountId: accountId }
+        deleteAccount() {
+            this.$axios.delete(`/api/user`, { 
                 }).then(() => {
-                    this.$axios.get(`/api/user/social`, { 
-                    }).then(res => {
-                        this.userInfo.socialAccounts = res.data.list;
-                    }).catch((error) => {
-                        console.error("연동 해지 작성 실패:", error);
-                    });
+                    this.$store.commit('removeToken')
+                    alert('회원탈퇴하였습니다.');
+                    this.$router.push({path: '/dailylog/login'})
                 }).catch((error) => {
                     console.error("연동 해지 실패:", error);
                 });
