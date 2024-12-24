@@ -1,7 +1,7 @@
 <template>
     <div class="postDetail postContents">
         <div class="flex betweenBox pdt10">
-            <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z"/>
+            <img :src="post.authorProfile" alt="프로필 사진" class="profile-image profile-z" @click="goToUserHome(post.email)"/>
             <div class="rightContent">
                 <div class="flex betweenBox pdb10">
                     <strong class="txt_left bottom">{{ post.authorNickname }}</strong>
@@ -30,7 +30,7 @@
                         <div class="comment-item">
                             <div class="commentContainer">
                                 <div class="comment flex betweenBox">
-                                    <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
+                                    <img :src="comment.userProfile" alt="프로필 사진" class="profile-image profile-z" @click="goToUserHome(comment.userEmail)"/>
                                     <div class="rightContent">
                                         <div class="flex betweenBox pdb10">
                                             <strong>{{ comment.nickname }}</strong>
@@ -54,7 +54,7 @@
                                 <div class="child-comment">
                                     <div class="commentContainer">
                                         <div class="comment flex betweenBox">
-                                            <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image profile-z"/>
+                                            <img :src="child.userProfile" alt="프로필 사진" class="profile-image profile-z" @click="goToUserHome(child.userEmail)"/>
                                             <div class="rightContent">
                                                 <div class="flex betweenBox pdb10">
                                                     <strong>{{ child.nickname }}</strong>
@@ -184,6 +184,9 @@ export default {
                     console.error("답글 작성 실패:", error);
                 });
         },
+        goToUserHome(userEmail) {
+            this.$router.push(`/dailylog/user/home/${userEmail}`);
+        }
     },
     mounted() {
         this.getPosts();
