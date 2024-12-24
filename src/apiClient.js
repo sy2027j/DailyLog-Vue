@@ -50,6 +50,8 @@ apiClient.interceptors.response.use(
         router.push({path: '/dailylog/login'})
         return Promise.reject(refreshError);
       }
+    } else if (!store.state.token) {
+      alert("로그인이 필요한 서비스입니다.");
     }
     return Promise.reject(error);
   }
