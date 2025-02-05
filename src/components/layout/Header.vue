@@ -8,12 +8,12 @@
 
             <b-collapse id="nav-collapse" is-nav right>
                 <b-navbar-nav v-if="!$store.state.token">
-                    <b-nav-item class="headMenu" href="/dailylog/login">로그인</b-nav-item>
-                    <b-nav-item class="headMenu bgLogo" href="/dailylog/join">회원가입</b-nav-item>
+                    <b-nav-item class="headMenu" to="/dailylog/login">로그인</b-nav-item>
+                    <b-nav-item class="headMenu bgLogo" to="/dailylog/join">회원가입</b-nav-item>
                 </b-navbar-nav>
                 <b-navbar-nav v-else>
                     <b-nav-item class="headMenu" @click="logout()">로그아웃</b-nav-item>
-                    <b-nav-item class="headMenu bgLogo" href="/dailylog/mypage/profile">마이페이지</b-nav-item>
+                    <b-nav-item class="headMenu bgLogo" to="/dailylog/mypage/profile">마이페이지</b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -21,8 +21,8 @@
     <div id="fixNav" class="topNavBar">
         <b-navbar toggleable="lg" type="light" variant="white">
             <b-navbar-nav class="first">
-                <b-nav-item class="menuTitle" href="/dailylog/posts/bestPosts">BEST</b-nav-item>
-                <b-nav-item class="menuTitle" href="/dailylog/posts/subscribePosts">구독</b-nav-item>
+                <b-nav-item class="menuTitle" to="/dailylog/posts/bestPosts" :class="{ activeMenu: $route.path === '/dailylog/posts/bestPosts' }">BEST</b-nav-item>
+                <b-nav-item class="menuTitle" to="/dailylog/posts/subscribePosts" :class="{ activeMenu: $route.path === '/dailylog/posts/subscribePosts' }">구독</b-nav-item>
             </b-navbar-nav>
 
             <b-collapse id="nav-collapse" is-nav>
@@ -34,9 +34,9 @@
                         <img :src="$store.state.userInfo.profile" alt="프로필 사진" class="profile-image"/>
                         <span>{{$store.state.userInfo.nickname }}</span>
                     </template>
-                    <b-dropdown-item :href="`/dailylog/mypage/home/${$store.state.userInfo.email}`">내 홈</b-dropdown-item>
-                    <b-dropdown-item href="/dailylog/mypage/newPost">새 글쓰기</b-dropdown-item>
-                    <b-dropdown-item href="/dailylog/mypage/myInfo">내 정보</b-dropdown-item>
+                    <b-dropdown-item :to="`/dailylog/mypage/home/${$store.state.userInfo.email}`">내 홈</b-dropdown-item>
+                    <b-dropdown-item to="/dailylog/mypage/newPost">새 글쓰기</b-dropdown-item>
+                    <b-dropdown-item to="/dailylog/mypage/myInfo">내 정보</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>
@@ -109,5 +109,10 @@ export default {
 }
 .menuTitle {
     padding-right: 10px;
+}
+.activeMenu {
+  color: #0099e5 !important;
+  font-weight: bold;
+  border-bottom: 2px solid #0099e5;
 }
 </style>
