@@ -112,6 +112,7 @@ export default {
             this.$axios.post('/api/post', postForm, {
                 headers: {
                     Authorization: `Bearer ${this.$store.state.token}`,
+                    "Content-Type": "multipart/form-data"
                 }
             }).then(res => {
                 if (res.status === 200) {
